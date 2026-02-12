@@ -14,7 +14,7 @@ Real-time speech to text that runs entirely in your browser. No server, no data 
 
 ## How It Works
 
-Uses the [Parakeet TDT 0.6B v3](https://huggingface.co/istupakov/parakeet-tdt-0.6b-v3-onnx) model via [parakeet.js](https://github.com/ysdede/parakeet.js) and ONNX Runtime Web. The model (~2.5 GB) downloads once and is cached in IndexedDB.
+Uses a 0.6B parameter speech recognition model running client-side via ONNX Runtime Web. The model (~2.5 GB) downloads once and is cached in IndexedDB.
 
 The progressive streaming algorithm uses a growing window (0–15s) that transitions to a sliding window with sentence-boundary detection for longer recordings.
 
@@ -37,13 +37,6 @@ Or simply open `index.html` — it will fall back to single-threaded WASM (slowe
 | Edge 113+ | Yes | Yes |
 | Firefox | No | Yes |
 | Safari | No | Yes |
-
-## Credits
-
-- [parakeet.js](https://github.com/ysdede/parakeet.js) — ONNX model wrapper
-- [ONNX Runtime Web](https://onnxruntime.ai/) — inference engine
-- [Parakeet TDT 0.6B v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v2) — NVIDIA speech recognition model
-- [andito/parakeet-v3-streaming](https://huggingface.co/spaces/andito/parakeet-v3-streaming) — original HF Space (MIT)
 
 ## License
 
