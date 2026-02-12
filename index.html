@@ -597,10 +597,11 @@ function App() {
       const buf = bufRef.current.data;
       setTs(buf.length / SAMPLE_RATE);
       if (busy || buf.length < SAMPLE_RATE) return;
-      // Simple VAD
+      // VAD using RMS energy (robust against room noise)
       const tail = buf.slice(-Math.min(32000, buf.length));
-      let mx = 0; for (let i = 0; i < tail.length; i++) { const a = Math.abs(tail[i]); if (a > mx) mx = a; }
-      if (mx < 0.01) {
+      let sum = 0; for (let i = 0; i < tail.length; i++) sum += tail[i] * tail[i];
+      const rms = Math.sqrt(sum / tail.length);
+      if (rms < 0.015) {
         silentMs += UPDATE_MS;
         if (silentMs >= SILENCE_TIMEOUT && buf.length > SAMPLE_RATE) { stopRec(); return; }
         return;
