@@ -590,6 +590,8 @@ function App() {
     setRecording(true);
 
     let busy = false;
+    let silentMs = 0;
+    const SILENCE_TIMEOUT = 3000;
     intervalRef.current = setInterval(async () => {
       if (!recRef.current?.recording) { clearInterval(intervalRef.current); return; }
       const buf = bufRef.current.data;
@@ -598,7 +600,12 @@ function App() {
       // Simple VAD
       const tail = buf.slice(-Math.min(32000, buf.length));
       let mx = 0; for (let i = 0; i < tail.length; i++) { const a = Math.abs(tail[i]); if (a > mx) mx = a; }
-      if (mx < 0.01) return;
+      if (mx < 0.01) {
+        silentMs += UPDATE_MS;
+        if (silentMs >= SILENCE_TIMEOUT && buf.length > SAMPLE_RATE) { stopRec(); return; }
+        return;
+      }
+      silentMs = 0;
       busy = true;
       try {
         const r = await streamerRef.current.update(buf);
